@@ -1,11 +1,7 @@
 # Árbol Binario en Java
 
 ## Integrantes del Grupo
-- [Nombre del integrante 1]
-- [Nombre del integrante 2]
-- [Nombre del integrante 3]
-- [Nombre del integrante 4]
-- [Nombre del integrante 5]
+- 1152467574 Alejandro Rendon Moncada
 
 ---
 
