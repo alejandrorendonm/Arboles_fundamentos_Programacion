@@ -1,158 +1,177 @@
 import java.util.Scanner;
 
-// Clase que representa un nodo del árbol
-class Nodo {
-    int dato;
-    Nodo izquierdo;
-    Nodo derecho;
-    
-    // Constructor
-    public Nodo(int dato) {
-        this.dato = dato;
-        this.izquierdo = null;
-        this.derecho = null;
-    }
-}
+public class Main {
+    // Clase Nodo - cada cajita del árbol
+    static class Nodo {
+        int valor;
+        Nodo izquierda;
+        Nodo derecha;
 
-// Clase que representa el Árbol Binario
-class ArbolBinario {
-    Nodo raiz;
-    
-    // Constructor
-    public ArbolBinario() {
-        this.raiz = null;
+        Nodo(int valor) {
+            this.valor = valor;
+            this.izquierda = null;
+            this.derecha = null;
+        }
     }
-    
-    // Método público para insertar un número
-    public void insertar(int dato) {
-        raiz = insertarRecursivo(raiz, dato);
-        System.out.println("Número " + dato + " insertado correctamente.");
-    }
-    
-    // Método privado recursivo para insertar
-    private Nodo insertarRecursivo(Nodo nodo, int dato) {
-        // Si el nodo está vacío, crear uno nuevo
-        if (nodo == null) {
-            return new Nodo(dato);
-        }
-        
-        // Si el dato es menor, ir a la izquierda
-        if (dato < nodo.dato) {
-            nodo.izquierdo = insertarRecursivo(nodo.izquierdo, dato);
-        }
-        // Si el dato es mayor, ir a la derecha
-        else if (dato > nodo.dato) {
-            nodo.derecho = insertarRecursivo(nodo.derecho, dato);
-        }
-        // Si el dato ya existe, no hacer nada
-        else {
-            System.out.println("El número " + dato + " ya existe en el árbol.");
-        }
-        
-        return nodo;
-    }
-    
-    // Método público para recorrido inorden
-    public void recorridoInorden() {
+
+    // La raíz del árbol
+    static Nodo raiz = null;
+    static int contador = 0;  // Para contar cuántos números hay
+
+    // INSERTAR un número en el árbol
+    public static void insertar(int numero) {
         if (raiz == null) {
-            System.out.println("El árbol está vacío.");
-            return;
-        }
-        System.out.print("Recorrido Inorden: ");
-        recorridoInordenRecursivo(raiz);
-        System.out.println();
-    }
-    
-    // Método privado recursivo para recorrido inorden
-    // Orden: Izquierda -> Raíz -> Derecha
-    private void recorridoInordenRecursivo(Nodo nodo) {
-        if (nodo != null) {
-            recorridoInordenRecursivo(nodo.izquierdo);
-            System.out.print(nodo.dato + " ");
-            recorridoInordenRecursivo(nodo.derecho);
-        }
-    }
-    
-    // Método público para buscar un número
-    public void buscar(int dato) {
-        boolean encontrado = buscarRecursivo(raiz, dato);
-        if (encontrado) {
-            System.out.println("El número " + dato + " SÍ existe en el árbol.");
+            raiz = new Nodo(numero);
+            contador++;
+            System.out.println("✓ Se insertó " + numero + " como raíz del árbol");
         } else {
-            System.out.println("El número " + dato + " NO existe en el árbol.");
+            insertarNodo(raiz, numero);
         }
     }
-    
-    // Método privado recursivo para buscar
-    private boolean buscarRecursivo(Nodo nodo, int dato) {
-        // Si el nodo es nulo, no se encontró
+
+    // Función auxiliar para insertar
+    static void insertarNodo(Nodo nodo, int numero) {
+        // Si el número es menor, va a la izquierda
+        if (numero < nodo.valor) {
+            if (nodo.izquierda == null) {
+                nodo.izquierda = new Nodo(numero);
+                contador++;
+                System.out.println("✓ Se insertó " + numero + " a la izquierda de " + nodo.valor);
+            } else {
+                insertarNodo(nodo.izquierda, numero);
+            }
+        }
+        // Si el número es mayor, va a la derecha
+        else if (numero > nodo.valor) {
+            if (nodo.derecha == null) {
+                nodo.derecha = new Nodo(numero);
+                contador++;
+                System.out.println(" Se insertó " + numero + " a la derecha de " + nodo.valor);
+            } else {
+                insertarNodo(nodo.derecha, numero);
+            }
+        }
+        // Si el número ya existe
+        else {
+            System.out.println(" El número " + numero + " ya existe en el árbol");
+        }
+    }
+
+    // BUSCAR un número en el árbol
+    public static void buscar(int numero) {
+        System.out.print("Buscando " + numero + "... ");
+        if (buscarNodo(raiz, numero)) {
+            System.out.println("¡ENCONTRADO! ✓");
+        } else {
+            System.out.println("No está en el árbol ✗");
+        }
+    }
+
+    // Función auxiliar para buscar
+    static boolean buscarNodo(Nodo nodo, int numero) {
         if (nodo == null) {
             return false;
         }
-        
-        // Si se encontró el dato
-        if (dato == nodo.dato) {
+        if (numero == nodo.valor) {
             return true;
         }
-        
-        // Si el dato es menor, buscar a la izquierda
-        if (dato < nodo.dato) {
-            return buscarRecursivo(nodo.izquierdo, dato);
-        }
-        // Si el dato es mayor, buscar a la derecha
-        else {
-            return buscarRecursivo(nodo.derecho, dato);
+        if (numero < nodo.valor) {
+            return buscarNodo(nodo.izquierda, numero);
+        } else {
+            return buscarNodo(nodo.derecha, numero);
         }
     }
-}
 
-// Clase principal con el menú
-public class Main {
+    // MOSTRAR todos los números (en orden)
+    public static void mostrar() {
+        if (raiz == null) {
+            System.out.println("El árbol está vacío");
+        } else {
+            System.out.println("\n=== CONTENIDO DEL ÁRBOL ===");
+            System.out.println("Total de números: " + contador);
+            System.out.print("Números ordenados: ");
+            mostrarEnOrden(raiz);
+            System.out.println("\n===========================");
+        }
+    }
+
+    // Función para mostrar
+    static void mostrarEnOrden(Nodo nodo) {
+        if (nodo != null) {
+            mostrarEnOrden(nodo.izquierda);
+            System.out.print(nodo.valor + " ");
+            mostrarEnOrden(nodo.derecha);
+        }
+    }
+
+    // PROGRAMA PRINCIPAL
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArbolBinario arbol = new ArbolBinario();
-        int opcion;
-        
-        do {
-            System.out.println("\n╔════════════════════════════════════╗");
-            System.out.println("║   ÁRBOL BINARIO - MENÚ PRINCIPAL   ║");
-            System.out.println("╚════════════════════════════════════╝");
-            System.out.println("1. Insertar un número");
-            System.out.println("2. Mostrar recorrido Inorden");
-            System.out.println("3. Buscar un número");
+        Scanner entrada = new Scanner(System.in);
+
+
+        System.out.println("ÁRBOL BINARIO SIMPLE");
+
+        while (true) {
+            System.out.println("\n--- MENÚ ---");
+            System.out.println("1. Insertar varios números");
+            System.out.println("2. Buscar varios números");
+            System.out.println("3. Ver árbol completo");
             System.out.println("4. Salir");
-            System.out.print("\nSeleccione una opción: ");
-            
-            opcion = scanner.nextInt();
-            
-            switch (opcion) {
-                case 1:
-                    System.out.print("\nIngrese el número a insertar: ");
-                    int numeroInsertar = scanner.nextInt();
-                    arbol.insertar(numeroInsertar);
-                    break;
-                    
-                case 2:
-                    System.out.println();
-                    arbol.recorridoInorden();
-                    break;
-                    
-                case 3:
-                    System.out.print("\nIngrese el número a buscar: ");
-                    int numeroBuscar = scanner.nextInt();
-                    arbol.buscar(numeroBuscar);
-                    break;
-                    
-                case 4:
-                    System.out.println("\n¡Gracias por usar el programa!");
-                    break;
-                    
-                default:
-                    System.out.println("\nOpción inválida. Intente nuevamente.");
+            System.out.print("Elige: ");
+
+            int opcion = entrada.nextInt();
+
+            if (opcion == 1) {
+                // INSERTAR VARIOS NÚMEROS SIN VOLVER AL MENÚ
+                System.out.println("\n=== INSERTAR NÚMEROS ===");
+                System.out.println("(Escribe 0 para volver al menú)");
+
+                while (true) {
+                    System.out.print("Insertar número: ");
+                    int num = entrada.nextInt();
+
+                    if (num == 0) {
+                        System.out.println("Volviendo al menú...");
+                        break;
+                    }
+
+                    insertar(num);
+                }
             }
-            
-        } while (opcion != 4);
-        
-        scanner.close();
+            else if (opcion == 2) {
+                // BUSCAR VARIOS NÚMEROS SIN VOLVER AL MENÚ
+                if (raiz == null) {
+                    System.out.println("⚠ El árbol está vacío, inserta números primero");
+                } else {
+                    System.out.println("\n=== BUSCAR NÚMEROS ===");
+                    System.out.println("(Escribe 0 para volver al menú)");
+
+                    while (true) {
+                        System.out.print("Buscar número: ");
+                        int num = entrada.nextInt();
+
+                        if (num == 0) {
+                            System.out.println("Volviendo al menú...");
+                            break;
+                        }
+
+                        buscar(num);
+                    }
+                }
+            }
+            else if (opcion == 3) {
+                mostrar();
+            }
+            else if (opcion == 4) {
+                System.out.println("\n¡Gracias por practicar! 👋");
+                System.out.println("Insertaste " + contador + " números en total");
+                break;
+            }
+            else {
+                System.out.println("⚠ Opción no válida (1-4)");
+            }
+        }
+
+        entrada.close();
     }
 }
